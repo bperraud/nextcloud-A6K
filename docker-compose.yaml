@@ -27,6 +27,7 @@ services:
     container_name: mariadb1
     environment:
       <<: *common-env
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
       MARIADB_GALERA_NODE_NAME: mariadb1
     volumes:
       - mariadb1_data:/bitnami/mariadb
@@ -40,23 +41,24 @@ services:
     container_name: mariadb2
     environment:
       <<: *common-env
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
       MARIADB_GALERA_NODE_NAME: mariadb2
     volumes:
       - mariadb2_data:/bitnami/mariadb
       - ./conf.d:/bitnami/mariadb/conf
 
-  mariadb3:
-    image: bitnami/mariadb-galera:latest
-    restart: unless-stopped
-    networks:
-      - galera_net
-    container_name: mariadb3
-    environment:
-      <<: *common-env
-      MARIADB_GALERA_NODE_NAME: mariadb3
-    volumes:
-      - mariadb3_data:/bitnami/mariadb
-      - ./conf.d:/bitnami/mariadb/conf
+  # mariadb3:
+  #   image: bitnami/mariadb-galera:latest
+  #   restart: unless-stopped
+  #   networks:
+  #     - galera_net
+  #   container_name: mariadb3
+  #   environment:
+  #     <<: *common-env
+  #     MARIADB_GALERA_NODE_NAME: mariadb3
+  #   volumes:
+  #     - mariadb3_data:/bitnami/mariadb
+  #     - ./conf.d:/bitnami/mariadb/conf
 
 volumes:
   mariadb1_data:
