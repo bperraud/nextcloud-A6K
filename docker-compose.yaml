@@ -20,7 +20,7 @@ x-common-settings: &common-settings
 
 services:
   mariadb1:
-    image: bitnami/mariadb-galera:latest
+    image: bitnami/mariadb-galera:11.4.7
     restart: unless-stopped
     networks:
       - galera_net
@@ -34,7 +34,7 @@ services:
       - ./conf.d:/bitnami/mariadb/conf
 
   mariadb2:
-    image: bitnami/mariadb-galera:latest
+    image: bitnami/mariadb-galera:11.4.7
     restart: unless-stopped
     networks:
       - galera_net
@@ -48,7 +48,7 @@ services:
       - ./conf.d:/bitnami/mariadb/conf
 
   # mariadb3:
-  #   image: bitnami/mariadb-galera:latest
+  #   image: bitnami/mariadb-galera:11.4.7
   #   restart: unless-stopped
   #   networks:
   #     - galera_net
@@ -59,6 +59,27 @@ services:
   #   volumes:
   #     - mariadb3_data:/bitnami/mariadb
   #     - ./conf.d:/bitnami/mariadb/conf
+
+
+  proxysql:
+    image: proxysql/proxysql:3.0.1
+    container_name: proxysql
+    ports:
+      - "6033:6033"  # MySQL client-facing port
+      - "6032:6032"  # Admin port
+    volumes:
+      - ./config/proxysql.cnf:/etc/proxysql.cnf:ro
+      - ./config/probe.sh:/probe.sh:ro
+    # healthcheck:
+    #   test: [ "CMD", "bash", "/probe.sh", "readiness" ]
+    #   interval: 15s
+    #   timeout: 3s
+    #   retries: 5
+    #   start_period: 30s
+    restart: always
+    networks:
+      - galera_net
+
 
 volumes:
   mariadb1_data:
