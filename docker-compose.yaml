@@ -1,0 +1,69 @@
+version: '3.8'
+
+x-common-env: &common-env
+  ALLOW_EMPTY_PASSWORD: "no"
+  MARIADB_GALERA_CLUSTER_NAME: nextcloud-cluster
+  MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb1,mariadb2,mariadb3
+  MARIADB_DATABASE: nextcloud
+  MARIADB_USER: nextcloud
+  MARIADB_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+  MARIADB_ROOT_PASSWORD: ${ROOT_PASSWORD}
+  MARIADB_GALERA_MARIABACKUP_PASSWORD: ${MARIABACKUP_PASSWORD}
+  MARIADB_EXTRA_FLAGS: >-
+    --wsrep-sync-wait=3
+    --transaction-isolation=READ-COMMITTED
+    --sql-mode=NO_AUTO_VALUE_ON_ZERO,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+    --expire-logs-days=3
+
+
+x-common-settings: &common-settings
+
+services:
+  mariadb1:
+    image: bitnami/mariadb-galera:latest
+    restart: unless-stopped
+    networks:
+      - galera_net
+    container_name: mariadb1
+    environment:
+      <<: *common-env
+      MARIADB_GALERA_NODE_NAME: mariadb1
+    volumes:
+      - mariadb1_data:/bitnami/mariadb
+      - ./conf.d:/bitnami/mariadb/conf
+
+  mariadb2:
+    image: bitnami/mariadb-galera:latest
+    restart: unless-stopped
+    networks:
+      - galera_net
+    container_name: mariadb2
+    environment:
+      <<: *common-env
+      MARIADB_GALERA_NODE_NAME: mariadb2
+    volumes:
+      - mariadb2_data:/bitnami/mariadb
+      - ./conf.d:/bitnami/mariadb/conf
+
+  mariadb3:
+    image: bitnami/mariadb-galera:latest
+    restart: unless-stopped
+    networks:
+      - galera_net
+    container_name: mariadb3
+    environment:
+      <<: *common-env
+      MARIADB_GALERA_NODE_NAME: mariadb3
+    volumes:
+      - mariadb3_data:/bitnami/mariadb
+      - ./conf.d:/bitnami/mariadb/conf
+
+volumes:
+  mariadb1_data:
+  mariadb2_data:
+  mariadb3_data:
+
+networks:
+  galera_net:
+    driver: bridge
+
