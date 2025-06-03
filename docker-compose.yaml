@@ -76,6 +76,8 @@ services:
     #   timeout: 3s
     #   retries: 5
     #   start_period: 30s
+    entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
+
     restart: always
     networks:
       - galera_net

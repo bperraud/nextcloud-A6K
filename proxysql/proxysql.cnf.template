@@ -1,11 +1,11 @@
 datadir: "/var/lib/proxysql"
 
 admin_variables: {
-  admin_credentials: "root:{{ $dbRootPass | b64dec }};cluster:{{ $dbRootPass | b64dec }}"
+  admin_credentials: "root:$ROOT_DB_PASSWORD;cluster:$ROOT_DB_PASSWORD"
   mysql_ifaces: "0.0.0.0:6032"
   refresh_interval: 2000
   cluster_username: "cluster"
-  cluster_password: "{{ $dbRootPass | b64dec }}"
+  cluster_password: "$ROOT_DB_PASSWORD"
   cluster_check_interval_ms: 200
   cluster_check_status_frequency: 100      
   cluster_mysql_query_rules_diffs_before_sync: 3
@@ -26,8 +26,8 @@ mysql_variables: {
   stacksize: 1048576
   server_version: "8.0.20"
   connect_timeout_server: 3000
-  monitor_username: "{{ index .Values "mariadb-galera" "db" "user" }}"
-  monitor_password: "{{ $dbPassword | b64dec }}"
+  monitor_username: "$DB_USER"
+  monitor_password: "$DB_PASSWORD"
   monitor_history: 600000
   monitor_connect_interval: 5000
   monitor_ping_interval: 2000
@@ -42,20 +42,19 @@ mysql_variables: {
   connect_retries_on_failure: 10
 }
 
+
 proxysql_servers = (
-{{- range $i := until (int .Values.proxysql.replicaCount) }}
-  { hostname = "proxysql-{{ $i }}.proxysql-admin", port = 6032, weight = 1 },
-{{- end }}
+  { hostname = "proxysql", port = 6032, weight = 1 }
 )
 
 mysql_servers = (
-{{- range $i := until (int (mul 2 (index .Values "mariadb-galera" "replicaCount"))) }}
-  { weight = {{ sub 100 $i }}, address = "{{ $.Release.Name }}-mariadb-galera-{{ $i }}.{{ $.Release.Name }}-mariadb-galera-headless", port = 3306, hostgroup = 3, max_connections = 250 },
-{{- end}}
+  { address = "mariadb1", port = 3306, hostgroup = 0, max_connections = 100 },
+  { address = "mariadb2", port = 3306, hostgroup = 1, max_connections = 100 },
+  { address = "mariadb3", port = 3306, hostgroup = 1, max_connections = 100 }
 )
 
 mysql_users: (
-  { username = "{{ index .Values "mariadb-galera" "db" "user" }}" , password = "{{ $dbPassword | b64dec }}" , default_hostgroup = 0 , active = 1 , transaction_persistent = 1 }
+  { username = "$DB_USER", password = "$DB_PASSWORD", default_hostgroup = 0, active = 1 }
 )
 
 mysql_query_rules: ({
