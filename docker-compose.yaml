@@ -12,6 +12,24 @@ x-common-env: &common-env
 
 
 services:
+
+
+
+
+  nextcloud:
+    build:
+      context: ./php-fpm/
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb1
+      - redis
+
+  apache:
+    build:
+      context: ./apache/
+      dockerfile: Dockerfile
+
+
   mariadb1:
     image: bitnami/mariadb-galera:11.4.7
     restart: unless-stopped
@@ -81,7 +99,12 @@ services:
       - galera_net
 
   redis:
-    image: redis:apline
+    image: redis:alpine
+    restart: always
+
+
+  clamav:
+    image: ghcr.io/mailu/clamav:1.9.50
     restart: always
 
 volumes:
