@@ -16,8 +16,6 @@ x-common-env: &common-env
     --expire-logs-days=3
 
 
-x-common-settings: &common-settings
-
 services:
   mariadb1:
     image: bitnami/mariadb-galera:11.4.7
@@ -68,8 +66,9 @@ services:
       - "6033:6033"  # MySQL client-facing port
       - "6032:6032"  # Admin port
     volumes:
-      - ./config/proxysql.cnf:/etc/proxysql.cnf:ro
-      - ./config/probe.sh:/probe.sh:ro
+      - ./proxysql/proxysql.cnf.template:/etc/proxysql.cnf.template:ro
+      - ./proxysql/entrypoint.sh:/entrypoint.sh:ro
+
     # healthcheck:
     #   test: [ "CMD", "bash", "/probe.sh", "readiness" ]
     #   interval: 15s
