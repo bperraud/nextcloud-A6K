@@ -10,9 +10,24 @@ wwwdir=/var/www/html
 cd $wwwdir
 
 # galera needs to be stable during nextcloud installation, or it may fail and leave itself broken
-if [ "`host {{.Release.Name}}-mariadb-galera-headless | wc -l`" != "{{ index .Values "mariadb-galera" "replicaCount" }}" ]; then
-    echo "Not all galera nodes ready; not installing or upgrading."
-    exit 1
+# if [ "`host {{.Release.Name}}-mariadb-galera-headless | wc -l`" != "{{ index .Values "mariadb-galera" "replicaCount" }}" ]; then
+#     echo "Not all galera nodes ready; not installing or upgrading."
+#     exit 1
+# fi
+#
+GALERA_NODES_ARRAY=("mariadb1" "mariadb2" "mariadb3")
+EXPECTED_COUNT=${#GALERA_NODES_ARRAY[@]}
+RESOLVED_COUNT=0
+
+for NODE in "${GALERA_NODES_ARRAY[@]}"; do
+  if getent hosts "$NODE" > /dev/null; then
+    ((RESOLVED_COUNT++))
+  fi
+done
+
+if [ "$RESOLVED_COUNT" -ne "$EXPECTED_COUNT" ]; then
+  echo "Not all galera nodes ready; not installing or upgrading."
+  exit 1
 fi
 
 if [ ! -L config/config.php ]; then
@@ -58,7 +73,7 @@ else # not installed
     ?>
     EOF
     mkdir -p $datadir/_nctmp
-    ./occ maintenance:install --data-dir "$datadir" --database mysql --database-name {{ index .Values "mariadb-galera" "db" "name" }} --database-user {{ index .Values "mariadb-galera" "db" "user" }} --database-pass "$DBPASS" --database-host proxysql --database-port 6033 --admin-user {{.Values.nextcloud.admin.user}} --admin-pass $NCADMINPASS
+    ./occ maintenance:install --data-dir "$datadir" --database mysql --database-name  "$MARIADB_DATABASE" --database-user "$MARIADB_USER" --database-pass "$MARIADB_PASSWORD" --database-host proxysql --database-port 6033 --admin-user $NCADMINUSER --admin-pass $NCADMINPASS
     touch "$datadir/.installed"
 fi
 
