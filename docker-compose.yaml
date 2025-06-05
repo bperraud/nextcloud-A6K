@@ -4,11 +4,6 @@ x-common-env: &common-env
   ALLOW_EMPTY_PASSWORD: "no"
   MARIADB_GALERA_CLUSTER_NAME: nextcloud-cluster
   MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb1,mariadb2,mariadb3
-  MARIADB_DATABASE: nextcloud
-  MARIADB_USER: nextcloud
-  MARIADB_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
-  MARIADB_ROOT_PASSWORD: ${ROOT_PASSWORD}
-  MARIADB_GALERA_MARIABACKUP_PASSWORD: ${MARIABACKUP_PASSWORD}
   MARIADB_EXTRA_FLAGS: >-
     --wsrep-sync-wait=3
     --transaction-isolation=READ-COMMITTED
@@ -23,6 +18,8 @@ services:
     networks:
       - galera_net
     container_name: mariadb1
+    env_file:
+      - ./mariadb-galera/.env
     environment:
       <<: *common-env
       MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
@@ -37,6 +34,8 @@ services:
     networks:
       - galera_net
     container_name: mariadb2
+    env_file:
+      - ./mariadb-galera/.env
     environment:
       <<: *common-env
       MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
@@ -60,34 +59,37 @@ services:
 
 
   proxysql:
-    image: proxysql/proxysql:3.0.1
+    build:
+      context: ./proxysql/
+      dockerfile: Dockerfile
     container_name: proxysql
+    env_file:
+      - ./mariadb-galera/.env
     ports:
       - "6033:6033"  # MySQL client-facing port
       - "6032:6032"  # Admin port
     volumes:
       - ./proxysql/proxysql.cnf.template:/etc/proxysql.cnf.template:ro
-      - ./proxysql/entrypoint.sh:/entrypoint.sh:ro
-
     # healthcheck:
     #   test: [ "CMD", "bash", "/probe.sh", "readiness" ]
     #   interval: 15s
     #   timeout: 3s
     #   retries: 5
     #   start_period: 30s
-    entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
-
     restart: always
     networks:
       - galera_net
 
+  redis:
+    image: redis:apline
+    restart: always
 
 volumes:
   mariadb1_data:
   mariadb2_data:
   mariadb3_data:
+  redis:
 
 networks:
   galera_net:
     driver: bridge
-
