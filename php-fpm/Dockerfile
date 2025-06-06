@@ -27,15 +27,6 @@ RUN apt-get -y update && \
     ([ $debug_build = 1 ] && apt-get -y install --no-install-recommends php8.2-xdebug) || true && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Setup PHP symlinks and config
-RUN ln -sf /etc/php/* /etc/php/cur && rm -f /etc/php/cur/fpm/pool.d/*
-
-COPY files/php-fpm.conf /etc/php/cur/fpm/pool.d/00-base.conf
-COPY files/90-apcu.ini /etc/php/cur/fpm/conf.d/90-apcu.ini
-COPY files/90-apcu.ini /etc/php/cur/cli/conf.d/90-apcu.ini
-COPY files/99-xdebug.ini /99-xdebug.ini
-RUN ([ $debug_build = 1 ] && mv /99-xdebug.ini /etc/php/cur/fpm/conf.d/99-xdebug.ini) || true
-RUN ([ $debug_build = 0 ] && rm -f /99-xdebug.ini) || true
 
 # Download and install Nextcloud
 ADD $nc_url /tmp/nc.zip 
@@ -68,6 +59,16 @@ RUN mkdir -p /srv/data && \
     chown -R www-data:root /srv/data && \
     chmod u=rwx,g=rwx,o= /srv/data
 
+
+# Setup PHP symlinks and config
+RUN ln -sf /etc/php/* /etc/php/cur && rm -f /etc/php/cur/fpm/pool.d/*
+
+COPY files/php-fpm.conf /etc/php/cur/fpm/pool.d/00-base.conf
+COPY files/90-apcu.ini /etc/php/cur/fpm/conf.d/90-apcu.ini
+COPY files/90-apcu.ini /etc/php/cur/cli/conf.d/90-apcu.ini
+COPY files/99-xdebug.ini /99-xdebug.ini
+RUN ([ $debug_build = 1 ] && mv /99-xdebug.ini /etc/php/cur/fpm/conf.d/99-xdebug.ini) || true
+RUN ([ $debug_build = 0 ] && rm -f /99-xdebug.ini) || true
 
 RUN ln -s /srv/data/.config-base.php /var/www/html/config/config.php
 
