@@ -3,8 +3,7 @@ version: '3.8'
 x-common-env: &common-env
   ALLOW_EMPTY_PASSWORD: "no"
   MARIADB_GALERA_CLUSTER_NAME: nextcloud-cluster
-  MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb1
-  # MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb1,mariadb2,mariadb3
+  MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb1,mariadb2,mariadb3
   MARIADB_EXTRA_FLAGS: >-
     --wsrep-sync-wait=3
     --transaction-isolation=READ-COMMITTED
@@ -22,6 +21,8 @@ services:
     # depends_on:
     #   - mariadb1
     #   - redis
+    networks:
+      - galera_net
     volumes:
       - nextcloud_data:/srv/data
       - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
@@ -33,6 +34,8 @@ services:
       context: ./php-fpm/
       dockerfile: Dockerfile
     entrypoint: ["/scripts/setup.sh"]
+    networks:
+      - galera_net
     env_file:
       - ./mariadb-galera/.env
     # environment:
@@ -62,40 +65,44 @@ services:
       - ./mariadb-galera/.env
     environment:
       <<: *common-env
-      MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
+      # MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
       MARIADB_GALERA_NODE_NAME: mariadb1
     volumes:
       - mariadb1_data:/bitnami/mariadb
       - ./conf.d:/bitnami/mariadb/conf
 
-  # mariadb2:
-  #   image: bitnami/mariadb-galera:11.4.7
-  #   restart: unless-stopped
-  #   networks:
-  #     - galera_net
-  #   container_name: mariadb2
-  #   env_file:
-  #     - ./mariadb-galera/.env
-  #   environment:
-  #     <<: *common-env
-  #     MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
-  #     MARIADB_GALERA_NODE_NAME: mariadb2
-  #   volumes:
-  #     - mariadb2_data:/bitnami/mariadb
-  #     - ./conf.d:/bitnami/mariadb/conf
+  mariadb2:
+    image: bitnami/mariadb-galera:11.4.7
+    restart: unless-stopped
+    networks:
+      - galera_net
+    container_name: mariadb2
+    env_file:
+      - ./mariadb-galera/.env
+    environment:
+      <<: *common-env
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
+      MARIADB_GALERA_NODE_NAME: mariadb2
+    volumes:
+      - mariadb2_data:/bitnami/mariadb
+      - ./conf.d:/bitnami/mariadb/conf
 
-  # mariadb3:
-  #   image: bitnami/mariadb-galera:11.4.7
-  #   restart: unless-stopped
-  #   networks:
-  #     - galera_net
-  #   container_name: mariadb3
-  #   environment:
-  #     <<: *common-env
-  #     MARIADB_GALERA_NODE_NAME: mariadb3
-  #   volumes:
-  #     - mariadb3_data:/bitnami/mariadb
-  #     - ./conf.d:/bitnami/mariadb/conf
+  mariadb3:
+    image: bitnami/mariadb-galera:11.4.7
+    restart: unless-stopped
+    networks:
+      - galera_net
+    container_name: mariadb3
+    env_file:
+      - ./mariadb-galera/.env
+    environment:
+      <<: *common-env
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
+      MARIADB_GALERA_NODE_NAME: mariadb3
+    volumes:
+      - mariadb3_data:/bitnami/mariadb
+      - ./conf.d:/bitnami/mariadb/conf
 
 
   proxysql:

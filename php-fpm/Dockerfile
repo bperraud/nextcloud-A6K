@@ -77,12 +77,6 @@ RUN update-ca-certificates --fresh
 
 #USER default
 
-# CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf
+CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf
 
-CMD ["tail", "-f", "/dev/null"]
-
-# COPY scripts/setup.sh /setup.sh
-
-# RUN chmod +x /setup.sh
-
-# ENTRYPOINT ["/setup.sh"]
+# CMD ["tail", "-f", "/dev/null"]

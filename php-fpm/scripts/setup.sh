@@ -1,7 +1,7 @@
 #!/bin/bash
 
-set -e
-set -o pipefail
+# set -e
+# set -o pipefail
 
 datadir=/srv/data
 backupdir="$datadir/.db_backup"
@@ -15,7 +15,9 @@ cd $wwwdir
 #     exit 1
 # fi
 #
-GALERA_NODES_ARRAY=("mariadb1" "mariadb2" "mariadb3")
+# GALERA_NODES_ARRAY=("mariadb1" "mariadb2" "mariadb3")
+
+GALERA_NODES_ARRAY=("mariadb1")
 EXPECTED_COUNT=${#GALERA_NODES_ARRAY[@]}
 RESOLVED_COUNT=0
 
@@ -29,6 +31,8 @@ if [ "$RESOLVED_COUNT" -ne "$EXPECTED_COUNT" ]; then
   echo "Not all galera nodes ready; not installing or upgrading."
   exit 1
 fi
+
+echo "all galera nodes ready;"
 
 if [ ! -L config/config.php ]; then
 
@@ -58,22 +62,24 @@ elif [ -e "$datadir/.installed" ]; then
 
 else # not installed
 
-    echo '<?php $CONFIG = [ "config_is_read_only" => false ] ;' > config/zupgrade.config.php
-    cat > config/config.php <<"EOF"
-    <?php
+echo '<?php $CONFIG = [ "config_is_read_only" => false ] ;' > config/zupgrade.config.php
+cat > config/config.php <<"EOF"
+<?php
 
-    $CONFIG = [
-    'installed' => false,
-    'appstoreenabled' => false,
-    'upgrade.disable-web' => true,
-    'maintenance' => false,
-    'config_is_read_only' => true,
-    ] ;
+$CONFIG = [
+'installed' => false,
+'appstoreenabled' => false,
+'upgrade.disable-web' => true,
+'maintenance' => false,
+'config_is_read_only' => true,
+] ;
 
-    ?>
-    EOF
-    mkdir -p $datadir/_nctmp
-    ./occ maintenance:install --data-dir "$datadir" --database mysql --database-name  "$MARIADB_DATABASE" --database-user "$MARIADB_USER" --database-pass "$MARIADB_PASSWORD" --database-host proxysql --database-port 6033 --admin-user $NCADMINUSER --admin-pass $NCADMINPASS
-    touch "$datadir/.installed"
+?>
+EOF
+
+mkdir -p $datadir/_nctmp
+./occ maintenance:install --data-dir "$datadir" --database mysql --database-name  "$MARIADB_DATABASE" --database-user "$MARIADB_USER" --database-pass "$MARIADB_PASSWORD" --database-host proxysql --database-port 6033 --admin-user $NCADMINUSER --admin-pass $NCADMINPASS
+touch "$datadir/.installed"
+
 fi
 
