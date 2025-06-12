@@ -54,8 +54,8 @@ services:
       context: ./apache/
       dockerfile: Dockerfile
     volumes:
-       - ./tls.crt:/tls/tls.crt
-       - ./tls.key:/tls/tls.key
+       - ./tls.crt:/ssl/tls.crt
+       - ./tls.key:/ssl/tls.key
 
 
   mariadb1:
@@ -137,9 +137,9 @@ services:
   redis-cluster-1:
     image: bitnami/redis-cluster:7.0
     environment:
-      - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-1
+      # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-1
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
-      - REDIS_PASSWORD=secure
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "7001:6379"
     networks:
@@ -148,9 +148,9 @@ services:
   redis-cluster-2:
     image: bitnami/redis-cluster:7.0
     environment:
-      - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-2
+      # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-2
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
-      - REDIS_PASSWORD=secure
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "7002:6379"
     networks:
@@ -159,9 +159,9 @@ services:
   redis-cluster-3:
     image: bitnami/redis-cluster:7.0
     environment:
-      - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-3
+      # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-3
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
-      - REDIS_PASSWORD=secure
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "7003:6379"
     networks:
