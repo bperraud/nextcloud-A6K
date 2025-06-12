@@ -9,9 +9,6 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get -y install procps unzip bzip2 wget
 
-COPY files/httpd.conf /usr/local/apache2/conf/httpd.conf
-RUN chmod a+w /usr/local/apache2/logs
-
 ADD $nc_url /tmp/nc.zip
 RUN unzip /tmp/nc.zip -d /var/www
 RUN mv /var/www/nextcloud /var/www/html
@@ -25,5 +22,8 @@ RUN for app in $apps; do \
 
 RUN chown -R www-data:root /var/www/html
 RUN chmod -R u=rX,g=rX,o= /var/www/html
+
+COPY files/httpd.conf /usr/local/apache2/conf/httpd.conf
+RUN chmod a+w /usr/local/apache2/logs
 
 #USER default

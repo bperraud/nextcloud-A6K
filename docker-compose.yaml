@@ -1,5 +1,3 @@
-version: '3.8'
-
 x-common-env: &common-env
   ALLOW_EMPTY_PASSWORD: "no"
   MARIADB_GALERA_CLUSTER_NAME: nextcloud-cluster
@@ -18,6 +16,7 @@ services:
     build:
       context: ./php-fpm/
       dockerfile: Dockerfile
+    container_name: nextcloud
     # depends_on:
     #   - mariadb1
     #   - redis
@@ -28,6 +27,49 @@ services:
       - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
       - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
       # - ./config:/var/www/html/config
+  
+  nextcloud-cron:
+    build:
+      context: ./php-fpm/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./nextcloud.env
+      - ./db.env
+    volumes:
+      - ./app:/var/www/html
+      - ./files:/var/www/html/data
+      - ./config:/var/www/html/config
+    entrypoint: /cron.sh
+    depends_on:
+      - nextcloud
+
+  notify-push:
+    build:
+      context: ./php-fpm/
+      dockerfile: Dockerfile
+    command:
+      - /usr/local/bin/notify_push
+      - --glob-config
+      - --allow-self-signed
+      - --
+      - /var/www/html/config/config.php
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "localhost", "7867"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    volumes:
+      - nextcloud_data:/srv/data
+      - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
+    environment:
+      - ALLOW_SELF_SIGNED=true
+    networks:
+      - galera_net
+
+  clamav:
+    image: ghcr.io/mailu/clamav:1.9.50
+    restart: always
 
   setup:
     build:
@@ -56,6 +98,10 @@ services:
     volumes:
        - ./tls.crt:/ssl/tls.crt
        - ./tls.key:/ssl/tls.key
+    ports:
+      - "8443:8443"
+    networks:
+      - galera_net
 
 
   mariadb1:
@@ -140,8 +186,6 @@ services:
       # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-1
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - "7001:6379"
     networks:
       - galera_net
 
@@ -151,8 +195,6 @@ services:
       # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-2
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - "7002:6379"
     networks:
       - galera_net
 
@@ -162,15 +204,10 @@ services:
       # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-3
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - "7003:6379"
     networks:
       - galera_net
 
-
-  clamav:
-    image: ghcr.io/mailu/clamav:1.9.50
-    restart: always
+  
 
 volumes:
   mariadb1_data:

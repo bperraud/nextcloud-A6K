@@ -1,0 +1,57 @@
+.version: &version version-info/v31.yml
+
+include: 
+  local: *version
+
+variables:
+  NC_VERSION_FILE: *version
+  DEBUG_BUILD: 0
+  FORCE_UPGRADE:
+    value: "false"
+    description: "skip the validate-version-upgrade stage and force an update even if it is unsafe (when skipping major version or downgrading)"
+    
+stages:
+  - prepare
+  - build
+  - deploy
+  - test
+
+.image-build-template: &image-build
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - echo "Image tag is `cat .ci-tags/$IMGNAME`"
+    - eval docker build $IMGARGS --pull -t "$CI_REGISTRY_IMAGE/$IMGNAME:$CI_COMMIT_REF_SLUG" docker-images/$IMGNAME
+    - docker push "$CI_REGISTRY_IMAGE/$IMGNAME:$CI_COMMIT_REF_SLUG"
+  rules:
+    - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
+      changes:
+        - *version
+        - docker-images/$IMGNAME/*
+        - docker-images/$IMGNAME/**/*
+
+build:apache:
+  <<: *image-build
+  variables:
+    IMGNAME: apache
+    IMGARGS: --build-arg=nc_url=$NC_URL --build-arg=apps='$NC_APPS'
+  rules:
+    - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
+      changes:
+        - apache/**/*
+
+build:php-fpm:
+  <<: *image-build
+  variables:
+    IMGNAME: php-fpm
+    IMGARGS: --build-arg nc_url=$NC_URL --build-arg push_bin_url=$NC_PUSH_URL --build-arg debug_build=$DEBUG_BUILD --build-arg apps='$NC_APPS'
+  rules:
+    - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
+      changes:
+        # - *version
+        - php-fpm/files/*
+        - php-fpm/Dockerfile
