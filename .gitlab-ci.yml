@@ -30,7 +30,7 @@ stages:
   rules:
     - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
       changes:
-        - *version
+        # - *version
         - docker-images/$IMGNAME/*
         - docker-images/$IMGNAME/**/*
 
