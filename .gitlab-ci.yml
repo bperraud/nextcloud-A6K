@@ -5,6 +5,7 @@
 
 variables:
   # NC_VERSION_FILE: *version
+  NC_URL: "https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
   DEBUG_BUILD: 0
   FORCE_UPGRADE:
     value: "false"

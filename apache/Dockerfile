@@ -1,6 +1,7 @@
 FROM httpd:2.4-bullseye
 
 ARG nc_url="https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
+
 ARG apps=""
 
 USER root
@@ -17,7 +18,6 @@ RUN unzip /tmp/nc.zip -d /var/www
 RUN mv /var/www/nextcloud /var/www/html
 RUN mkdir -p /var/www/html/custom_apps
 RUN rm -f /tmp/nc.zip
-
 
 RUN for app in $apps; do \
         echo installing $app ; \
