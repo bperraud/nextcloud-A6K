@@ -19,10 +19,10 @@ RUN mv /var/www/nextcloud /var/www/html
 RUN mkdir -p /var/www/html/custom_apps
 RUN rm -f /tmp/nc.zip
 
-RUN for app in $apps; do \
-        echo installing $app ; \
-        wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
-    done
+# RUN for app in $apps; do \
+#         echo installing $app ; \
+#         wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
+#     done
 
 RUN chown -R www-data:root /var/www/html
 RUN chmod -R u=rX,g=rX,o= /var/www/html

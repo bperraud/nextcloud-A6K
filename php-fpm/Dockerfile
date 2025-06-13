@@ -38,10 +38,10 @@ ADD $push_bin_url /usr/local/bin/notify_push
 RUN chmod +x /usr/local/bin/notify_push
 
 # Download and install custom apps
-RUN for app in $apps; do \
-    echo installing $app ; \
-    wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
-done
+# RUN for app in $apps; do \
+#     echo installing $app ; \
+#     wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
+# done
 
 
 # Permissions
