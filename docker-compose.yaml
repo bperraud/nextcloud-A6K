@@ -13,9 +13,11 @@ services:
 
 
   nextcloud:
-    build:
-      context: ./php-fpm/
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./php-fpm/
+    #   dockerfile: Dockerfile
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
+    pull_policy: always
     container_name: nextcloud
     # depends_on:
     #   - mariadb1
@@ -96,6 +98,7 @@ services:
     #   context: ./apache/
     #   dockerfile: Dockerfile
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:main
+    pull_policy: always
     volumes:
        - ./tls.crt:/ssl/tls.crt
        - ./tls.key:/ssl/tls.key
