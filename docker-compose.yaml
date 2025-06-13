@@ -92,9 +92,10 @@ services:
     restart: "no"
 
   apache:
-    build:
-      context: ./apache/
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./apache/
+    #   dockerfile: Dockerfile
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:main
     volumes:
        - ./tls.crt:/ssl/tls.crt
        - ./tls.key:/ssl/tls.key

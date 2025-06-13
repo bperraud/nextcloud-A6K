@@ -28,3 +28,4 @@ RUN chown -R www-data:root /var/www/html
 RUN chmod -R u=rX,g=rX,o= /var/www/html
 
 #USER default
+USER www-data
