@@ -23,7 +23,7 @@ $CONFIG = [
   'check_for_working_wellknown_setup' => true,
   'check_for_working_htaccess' => true,
   'check_data_directory_permissions' => false,
-  'config_is_read_only' => true,
+  'config_is_read_only' => false,
   'log_type' => 'file',
   'logfilemode' => 0640,
   'loglevel' => 2,
@@ -59,5 +59,3 @@ $CONFIG = [
   'upgrade.disable-web' => true
 ];
 ?>
-
-

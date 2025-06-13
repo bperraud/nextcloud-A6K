@@ -72,11 +72,10 @@ $CONFIG = [
 'upgrade.disable-web' => true,
 'maintenance' => false,
 'config_is_read_only' => true,
-] ;
+];
 
 ?>
 EOF
-
 mkdir -p $datadir/_nctmp
 ./occ maintenance:install --data-dir "$datadir" --database mysql --database-name  "$MARIADB_DATABASE" --database-user "$MARIADB_USER" --database-pass "$MARIADB_PASSWORD" --database-host proxysql --database-port 6033 --admin-user $NCADMINUSER --admin-pass $NCADMINPASS
 touch "$datadir/.installed"
