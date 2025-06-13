@@ -1,13 +1,11 @@
 FROM debian:bullseye-slim
 
-
 ARG nc_url="https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
 ARG push_bin_url="https://github.com/nextcloud/notify_push/releases/download/v1.0.0/notify_push-x86_64-unknown-linux-musl"
 ARG apps="" 
 ARG debug_build=0
 
 USER root
-
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \

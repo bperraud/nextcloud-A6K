@@ -18,6 +18,7 @@ RUN mv /var/www/nextcloud /var/www/html
 RUN mkdir -p /var/www/html/custom_apps
 RUN rm -f /tmp/nc.zip
 
+
 RUN for app in $apps; do \
         echo installing $app ; \
         wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
