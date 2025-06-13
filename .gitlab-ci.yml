@@ -1,10 +1,10 @@
-.version: &version version-info/v31.yml
+# .version: &version version-info/v31.yml
 
-include: 
-  local: *version
+# include: 
+#   local: *version
 
 variables:
-  NC_VERSION_FILE: *version
+  # NC_VERSION_FILE: *version
   DEBUG_BUILD: 0
   FORCE_UPGRADE:
     value: "false"
