@@ -27,8 +27,8 @@ RUN apt-get -y update && \
 
 
 # Download and install Nextcloud
-ADD $nc_url /tmp/nc.zip 
-RUN unzip /tmp/nc.zip -d /var/www && \
+RUN wget -O /tmp/nc.zip "$nc_url" && \
+    unzip /tmp/nc.zip -d /var/www && \
     mv /var/www/nextcloud /var/www/html && \
     mkdir -p /var/www/html/custom_apps && \
     rm -f /tmp/nc.zip
