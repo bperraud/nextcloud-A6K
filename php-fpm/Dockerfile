@@ -73,9 +73,9 @@ RUN ln -s /srv/data/.config-base.php /var/www/html/config/config.php
 COPY files/ca.crt /usr/local/share/ca-certificates/nc-ca.crt
 RUN update-ca-certificates --fresh
 
-USER default
+# USER default
 
-# USER www-data
+USER www-data
 
 CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf
 
