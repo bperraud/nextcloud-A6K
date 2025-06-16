@@ -28,7 +28,7 @@ services:
       # - nextcloud_data:/srv/data
       - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
       # - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
-      # - ./config:/var/www/html/config
+      - nextcloud_config:/var/www/html/config
   
   nextcloud-cron:
     build:
@@ -118,9 +118,14 @@ services:
       - ./mariadb-galera/.env
     environment:
       <<: *common-env
-      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
-      # MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
+      # MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
       MARIADB_GALERA_NODE_NAME: mariadb1
+    expose:
+      - "3306"
+      - "4567"
+      - "4568"
+      - "4444"
     volumes:
       - mariadb1_data:/bitnami/mariadb
       - ./conf.d:/bitnami/mariadb/conf
@@ -137,6 +142,13 @@ services:
       <<: *common-env
       MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
       MARIADB_GALERA_NODE_NAME: mariadb2
+    depends_on:
+      - "mariadb1"
+    expose:
+      - "3306"
+      - "4567"
+      - "4568"
+      - "4444"
     volumes:
       - mariadb2_data:/bitnami/mariadb
       - ./conf.d:/bitnami/mariadb/conf
@@ -153,6 +165,13 @@ services:
       <<: *common-env
       MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
       MARIADB_GALERA_NODE_NAME: mariadb3
+    depends_on:
+      - "mariadb1"
+    expose:
+      - "3306"
+      - "4567"
+      - "4568"
+      - "4444"
     volumes:
       - mariadb3_data:/bitnami/mariadb
       - ./conf.d:/bitnami/mariadb/conf
@@ -219,6 +238,7 @@ volumes:
   mariadb3_data:
   redis:
   nextcloud_data:
+  nextcloud_config:
 
 networks:
   galera_net:
