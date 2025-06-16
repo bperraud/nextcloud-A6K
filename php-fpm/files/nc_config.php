@@ -1,9 +1,10 @@
 <?php
 
 $CONFIG = [
-  'trusted_proxies' => ['localhost', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
+  'trusted_proxies' => ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
   'overwrite.cli.url' => 'https://cloud.example.com',
   'trusted_domains' => [
+    'localhost',
     'cloud.example.com',
     'nextcloud',
     'nextcloud.localdomain'
@@ -46,9 +47,9 @@ $CONFIG = [
   'memcache.locking' => '\OC\Memcache\Redis',
   'redis.cluster' => [
     'seeds' => [
-      'redis-cluster-0:7000',
-      'redis-cluster-1:7001',
-      'redis-cluster-2:7002'
+      'redis-cluster-0:6379',
+      'redis-cluster-1:6379',
+      'redis-cluster-2:6379'
     ],
     'timeout' => 0.0,
     'read_timeout' => 0.0,

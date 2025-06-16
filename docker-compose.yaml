@@ -184,7 +184,7 @@ services:
   #   image: redis:alpine
   #   restart: always
 
-  redis-cluster-1:
+  redis-cluster-0:
     image: bitnami/redis-cluster:7.0
     environment:
       # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-1
@@ -193,7 +193,7 @@ services:
     networks:
       - galera_net
 
-  redis-cluster-2:
+  redis-cluster-1:
     image: bitnami/redis-cluster:7.0
     environment:
       # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-2
@@ -202,7 +202,7 @@ services:
     networks:
       - galera_net
 
-  redis-cluster-3:
+  redis-cluster-2:
     image: bitnami/redis-cluster:7.0
     environment:
       # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-3
