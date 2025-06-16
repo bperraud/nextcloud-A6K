@@ -27,7 +27,7 @@ services:
     volumes:
       # - nextcloud_data:/srv/data
       - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
-      - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
+      # - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
       # - ./config:/var/www/html/config
   
   nextcloud-cron:
