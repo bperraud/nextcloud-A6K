@@ -31,9 +31,7 @@ services:
       - nextcloud_config:/var/www/html/config
   
   nextcloud-cron:
-    build:
-      context: ./php-fpm/
-      dockerfile: Dockerfile
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     restart: unless-stopped
     env_file:
       - ./nextcloud.env
@@ -47,9 +45,7 @@ services:
       - nextcloud
 
   notify-push:
-    build:
-      context: ./php-fpm/
-      dockerfile: Dockerfile
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     command:
       - /usr/local/bin/notify_push
       - --glob-config
@@ -74,9 +70,7 @@ services:
     restart: always
 
   setup:
-    build:
-      context: ./php-fpm/
-      dockerfile: Dockerfile
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     entrypoint: ["/scripts/setup.sh"]
     networks:
       - galera_net
@@ -88,9 +82,9 @@ services:
     depends_on:
       - mariadb1
     volumes:
-      - nextcloud_data:/srv/data
+      # - nextcloud_data:/srv/data
       - ./php-fpm/scripts:/scripts
-      # - ./config:/var/www/html/config
+      # - nextcloud_config:/var/www/html/config
     restart: "no"
 
   apache:
@@ -118,8 +112,9 @@ services:
       - ./mariadb-galera/.env
     environment:
       <<: *common-env
-      # MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
       MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
+      MARIADB_GALERA_FORCE_SAFETOBOOTSTRAP: yes
+      # MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
       MARIADB_GALERA_NODE_NAME: mariadb1
     expose:
       - "3306"
@@ -128,7 +123,7 @@ services:
       - "4444"
     volumes:
       - mariadb1_data:/bitnami/mariadb
-      - ./conf.d:/bitnami/mariadb/conf
+      - ./mariadb-galera/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
 
   mariadb2:
     image: bitnami/mariadb-galera:11.4.7
@@ -151,7 +146,7 @@ services:
       - "4444"
     volumes:
       - mariadb2_data:/bitnami/mariadb
-      - ./conf.d:/bitnami/mariadb/conf
+      - ./mariadb-galera/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
 
   mariadb3:
     image: bitnami/mariadb-galera:11.4.7
@@ -174,7 +169,7 @@ services:
       - "4444"
     volumes:
       - mariadb3_data:/bitnami/mariadb
-      - ./conf.d:/bitnami/mariadb/conf
+      - ./mariadb-galera/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
 
 
   proxysql:
@@ -199,14 +194,9 @@ services:
     networks:
       - galera_net
 
-  # redis:
-  #   image: redis:alpine
-  #   restart: always
-
   redis-cluster-0:
     image: bitnami/redis-cluster:7.0
     environment:
-      # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-1
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
@@ -215,7 +205,6 @@ services:
   redis-cluster-1:
     image: bitnami/redis-cluster:7.0
     environment:
-      # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-2
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
@@ -224,7 +213,6 @@ services:
   redis-cluster-2:
     image: bitnami/redis-cluster:7.0
     environment:
-      # - REDIS_CLUSTER_ANNOUNCE_IP=redis-node-3
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
