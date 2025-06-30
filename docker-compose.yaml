@@ -199,6 +199,8 @@ services:
     environment:
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data_0:/bitnami/redis
     networks:
       - galera_net
 
@@ -207,6 +209,8 @@ services:
     environment:
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data_1:/bitnami/redis
     networks:
       - galera_net
 
@@ -215,6 +219,8 @@ services:
     environment:
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2
       - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data_2:/bitnami/redis
     networks:
       - galera_net
 
@@ -227,6 +233,9 @@ volumes:
   redis:
   nextcloud_data:
   nextcloud_config:
+  redis_data_0:
+  redis_data_1:
+  redis_data_2:
 
 networks:
   galera_net:
