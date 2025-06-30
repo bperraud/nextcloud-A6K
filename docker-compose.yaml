@@ -12,10 +12,21 @@ x-common-env: &common-env
 services:
 
 
+  fix-perms:
+    image: busybox
+    volumes:
+      - nextcloud_data:/srv/data
+    command: ["sh", "-c", "chown -R 33:root /srv/data/"]  # 33 = www-data
+    restart: "no"
+
+  fix-perm:
+    image: busybox
+    volumes:
+      - nextcloud_config:/var/www/html/config
+    command: ["sh", "-c", "chown -R 33:root /var/www/html/config"]  # 33 = www-data
+    restart: "no"
+
   nextcloud:
-    # build:
-    #   context: ./php-fpm/
-    #   dockerfile: Dockerfile
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     pull_policy: always
     container_name: nextcloud
@@ -25,7 +36,7 @@ services:
     networks:
       - galera_net
     volumes:
-      # - nextcloud_data:/srv/data
+      - nextcloud_data:/srv/data
       - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
       # - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
       - nextcloud_config:/var/www/html/config
@@ -51,17 +62,19 @@ services:
       - --glob-config
       - --allow-self-signed
       - --
-      - /var/www/html/config/config.php
+      - /srv/data/.config-base.php
+      # - /var/www/html/config/config.php
     # healthcheck:
     #   test: ["CMD", "nc", "-z", "localhost", "7867"]
     #   interval: 30s
     #   timeout: 10s
     #   retries: 5
     volumes:
+      - nextcloud_config:/var/www/html/config
       - nextcloud_data:/srv/data
-      - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
-    environment:
-      - ALLOW_SELF_SIGNED=true
+      # - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
+    # environment:
+    #   - ALLOW_SELF_SIGNED=true
     networks:
       - galera_net
 
@@ -91,13 +104,14 @@ services:
     # build:
     #   context: ./apache/
     #   dockerfile: Dockerfile
+    container_name: apache
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:main
     pull_policy: always
     volumes:
        - ./tls.crt:/ssl/tls.crt
        - ./tls.key:/ssl/tls.key
     ports:
-      - "8443:8443"
+      - "443:8443"
     networks:
       - galera_net
 

@@ -2,7 +2,7 @@
 
 $CONFIG = [
   'trusted_proxies' => ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
-  'overwrite.cli.url' => 'https://cloud.example.com',
+  'overwrite.cli.url' => 'https://apache:8443',
   'trusted_domains' => [
     'localhost',
     'cloud.example.com',
