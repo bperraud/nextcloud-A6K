@@ -3,8 +3,8 @@ version: "3.8"
 
 x-common-env: &common-env
   ALLOW_EMPTY_PASSWORD: "no"
-  MARIADB_GALERA_CLUSTER_NAME: nextcloud-cluster
-  MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb1,mariadb2,mariadb3
+  MARIADB_GALERA_CLUSTER_NAME: "nextcloud-cluster"
+  MARIADB_GALERA_CLUSTER_ADDRESS: "gcomm://mariadb1,mariadb2,mariadb3"
   MARIADB_EXTRA_FLAGS: >-
     --wsrep-sync-wait=3
     --transaction-isolation=READ-COMMITTED
@@ -20,16 +20,18 @@ services:
       - ./mariadb-galera/.env
     environment:
       <<: *common-env
-      MARIADB_GALERA_CLUSTER_BOOTSTRAP: yes
-      MARIADB_GALERA_FORCE_SAFETOBOOTSTRAP: yes
-      MARIADB_GALERA_NODE_NAME: mariadb1
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: "yes"
+      MARIADB_GALERA_FORCE_SAFETOBOOTSTRAP: "yes"
+      MARIADB_GALERA_NODE_NAME: "mariadb1"
     volumes:
       - mariadb1_data:/bitnami/mariadb
-      - ./mariadb-galera/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    configs:
+      - source: mariadb_custom_cnf
+        target: /etc/mysql/conf.d/custom.cnf
     deploy:
       placement:
         constraints:
-          - node.hostname == vm1  # adjust to real hostname
+          - node.hostname == node1
 
   mariadb2:
     image: bitnami/mariadb-galera:11.4.7
@@ -39,15 +41,17 @@ services:
       - ./mariadb-galera/.env
     environment:
       <<: *common-env
-      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
-      MARIADB_GALERA_NODE_NAME: mariadb2
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: "no"
+      MARIADB_GALERA_NODE_NAME: "mariadb2"
     volumes:
       - mariadb2_data:/bitnami/mariadb
-      - ./mariadb-galera/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    configs:
+      - source: mariadb_custom_cnf
+        target: /etc/mysql/conf.d/custom.cnf
     deploy:
       placement:
         constraints:
-          - node.hostname == vm2  # adjust to real hostname
+          - node.hostname == node2
 
   mariadb3:
     image: bitnami/mariadb-galera:11.4.7
@@ -57,15 +61,17 @@ services:
       - ./mariadb-galera/.env
     environment:
       <<: *common-env
-      MARIADB_GALERA_CLUSTER_BOOTSTRAP: no
-      MARIADB_GALERA_NODE_NAME: mariadb3
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: "no"
+      MARIADB_GALERA_NODE_NAME: "mariadb3"
     volumes:
       - mariadb3_data:/bitnami/mariadb
-      - ./mariadb-galera/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    configs:
+      - source: mariadb_custom_cnf
+        target: /etc/mysql/conf.d/custom.cnf
     deploy:
       placement:
         constraints:
-          - node.hostname == vm3  # adjust to real hostname
+          - node.hostname == node3
 
 networks:
   galera_net:
@@ -75,4 +81,8 @@ volumes:
   mariadb1_data:
   mariadb2_data:
   mariadb3_data:
+
+configs:
+  mariadb_custom_cnf:
+    external: true
 
