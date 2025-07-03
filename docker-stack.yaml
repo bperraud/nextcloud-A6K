@@ -73,6 +73,49 @@ services:
         constraints:
           - node.hostname == node3
 
+  redis-cluster-1:
+    image: bitnami/redis-cluster:7.0
+    environment:
+      - REDIS_NODES=redis-cluster-1 redis-cluster-2 redis-cluster-3
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data_1:/bitnami/redis
+    networks:
+      - galera_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == node1
+
+  redis-cluster-2:
+    image: bitnami/redis-cluster:7.0
+    environment:
+      - REDIS_NODES=redis-cluster-1 redis-cluster-2 redis-cluster-3
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data_2:/bitnami/redis
+    networks:
+      - galera_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == node2
+
+  redis-cluster-3:
+    image: bitnami/redis-cluster:7.0
+    environment:
+      - REDIS_NODES=redis-cluster-1 redis-cluster-2 redis-cluster-3
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data_3:/bitnami/redis
+    networks:
+      - galera_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == node3
+
+
 networks:
   galera_net:
     driver: overlay
@@ -81,6 +124,9 @@ volumes:
   mariadb1_data:
   mariadb2_data:
   mariadb3_data:
+  redis_data_1:
+  redis_data_2:
+  redis_data_3:
 
 configs:
   mariadb_custom_cnf:
