@@ -105,7 +105,7 @@ services:
     #   context: ./apache/
     #   dockerfile: Dockerfile
     container_name: apache
-    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:default
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:ssl
     pull_policy: always
     volumes:
        - ./tls.crt:/ssl/tls.crt
