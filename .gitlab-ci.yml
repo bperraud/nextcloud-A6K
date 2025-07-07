@@ -77,6 +77,6 @@ build:php-fpm:
   rules:
     - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
       changes:
-        # - *version
+        - *version
         - php-fpm/files/*
         - php-fpm/Dockerfile
