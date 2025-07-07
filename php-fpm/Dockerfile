@@ -13,7 +13,6 @@ RUN apt-get -y update && \
     wget -O- https://packages.sury.org/php/apt.gpg | apt-key add - && \
     echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/sury-php.list
 
-
 # Install dependencies
 RUN apt-get -y update && \
     apt-get -y install --no-install-recommends \
