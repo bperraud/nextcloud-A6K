@@ -56,6 +56,7 @@ services:
       - nextcloud
 
   notify-push:
+    container_name: notify-push
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     command:
       - /usr/local/bin/notify_push
@@ -105,8 +106,7 @@ services:
     #   context: ./apache/
     #   dockerfile: Dockerfile
     container_name: apache
-    image: registry.gitlab.ulb.be/pole-techno/okd-apps/nextcloud/apache:dev
-    # image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:main
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:main
     pull_policy: always
     volumes:
        - ./tls.crt:/ssl/tls.crt

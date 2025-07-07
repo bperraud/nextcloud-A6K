@@ -43,6 +43,7 @@ RUN chmod +x /usr/local/bin/notify_push
 #     wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
 # done
 
+RUN wget --quiet -O- https://github.com/nextcloud-releases/notify_push/releases/download/v1.1.0/notify_push-v1.1.0.tar.gz | tar xz -C /var/www/html/custom_apps
 
 # Permissions
 RUN chown -R www-data:root /var/www/html && \
