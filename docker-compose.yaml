@@ -85,9 +85,19 @@ services:
     networks:
       - galera_net
 
+  # clamav:
+  #   image: ghcr.io/mailu/clamav:1.9.50
+  #   restart: always
+  
   clamav:
-    image: ghcr.io/mailu/clamav:1.9.50
-    restart: always
+    image: clamav/clamav:stable_base
+    container_name: clamav
+    volumes:
+      # Socket
+      - /var/run/clamav/:/var/run/clamav/
+      # Virus DB
+      - /var/docker/clamav/virus_db/:/var/lib/clamav/
+    restart: unless-stopped
 
   setup:
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main

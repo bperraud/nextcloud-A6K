@@ -2,6 +2,7 @@ FROM debian:bullseye-slim
 
 ARG nc_url="https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
 ARG push_bin_url="https://github.com/nextcloud/notify_push/releases/download/v1.1.0/notify_push-x86_64-unknown-linux-musl"
+ARG push_app_url=""
 ARG apps="" 
 ARG debug_build=0
 
@@ -42,7 +43,7 @@ RUN chmod +x /usr/local/bin/notify_push
 #     wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
 # done
 
-RUN wget --quiet -O- https://github.com/nextcloud-releases/notify_push/releases/download/v1.1.0/notify_push-v1.1.0.tar.gz | tar xz -C /var/www/html/apps
+RUN wget --quiet -O- $push_app_url | tar xz -C /var/www/html/apps
 
 # Permissions
 RUN chown -R www-data:root /var/www/html && \

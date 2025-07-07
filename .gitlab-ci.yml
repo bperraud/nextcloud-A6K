@@ -1,12 +1,12 @@
-# .version: &version version-info/v31.yml
+.version: &version version-info/v31.yml
 
-# include: 
-#   local: *version
+include: 
+  local: *version
 
 variables:
-  # NC_VERSION_FILE: *version
-  NC_URL: "https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
-  NC_PUSH_URL: "https://github.com/nextcloud/notify_push/releases/download/v1.1.0/notify_push-x86_64-unknown-linux-musl"
+  NC_VERSION_FILE: *version
+  # NC_URL: "https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
+  # NC_PUSH_URL: "https://github.com/nextcloud/notify_push/releases/download/v1.1.0/notify_push-x86_64-unknown-linux-musl"
   DEBUG_BUILD: 0
   FORCE_UPGRADE:
     value: "false"
@@ -17,6 +17,30 @@ stages:
   - build
   - deploy
   - test
+
+
+prepare:generate-nc-apps-url:
+  stage: prepare
+  script:
+    - apk add --no-cache curl
+    - |
+      set +e
+      APPS=""
+      for URL in $NC_APPS; do
+        RELEASE_PAGE=$(curl -s "$URL")
+        APP_URL=$(echo "$RELEASE_PAGE" | sed -n "/name=\"$NC_VERSION\"/,\$p" | grep -m 1 'class="release-download"' | awk -F'href="' '{print $2}' | awk -F'"' '{print $1}')
+        if [ -n "$APP_URL" ] ; then
+          APPS="$APPS $APP_URL"
+        else
+          APPS="$APPS $URL"
+        fi
+      done
+      echo "NC_APPS=$APPS" >> build.env
+    - echo $NC_APPS
+  artifacts:
+    reports:
+      dotenv: build.env
+
 
 .image-build-template: &image-build
   stage: build
@@ -49,7 +73,7 @@ build:php-fpm:
   <<: *image-build
   variables:
     IMGNAME: php-fpm
-    IMGARGS: --build-arg nc_url=$NC_URL --build-arg push_bin_url=$NC_PUSH_URL --build-arg debug_build=$DEBUG_BUILD --build-arg apps='$NC_APPS'
+    IMGARGS: --build-arg nc_url=$NC_URL --build-arg push_bin_url=$NC_PUSH_URL push_app_url=$NC_PUSH_APP --build-arg debug_build=$DEBUG_BUILD --build-arg apps='$NC_APPS'
   rules:
     - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
       changes:

@@ -1,0 +1,27 @@
+variables: 
+  NC_VERSION: "31"
+  NC_URL: https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip
+  NC_PUSH_APP : https://github.com/nextcloud-releases/notify_push/releases/download/v1.1.0/notify_push-v1.0.0.tar.gz
+  NC_PUSH_URL: https://github.com/nextcloud/notify_push/releases/download/v1.1.0/notify_push-x86_64-unknown-linux-musl
+
+  NC_APPS: >
+    https://github.com/bperraud/nc-permalink/releases/download/1.1.0/permalink-1.1.0.tar.gz
+    https://apps.nextcloud.com/apps/external/releases
+    https://apps.nextcloud.com/apps/integration_gitlab/releases
+    https://apps.nextcloud.com/apps/calendar/releases
+    https://apps.nextcloud.com/apps/collectives/releases
+    https://apps.nextcloud.com/apps/contacts/releases
+    https://apps.nextcloud.com/apps/deck/releases
+    https://apps.nextcloud.com/apps/files_antivirus/releases
+    https://apps.nextcloud.com/apps/forms/releases
+    https://apps.nextcloud.com/apps/impersonate/releases
+    https://apps.nextcloud.com/apps/integration_gitlab/releases
+    https://apps.nextcloud.com/apps/integration_onedrive/releases
+    https://apps.nextcloud.com/apps/notes/releases
+    https://apps.nextcloud.com/apps/onlyoffice/releases
+    https://apps.nextcloud.com/apps/polls/releases
+    https://apps.nextcloud.com/apps/spreed/releases
+    https://apps.nextcloud.com/apps/user_saml/releases
+    https://apps.nextcloud.com/apps/announcementcenter/releases
+    https://apps.nextcloud.com/apps/groupfolders/releases
+    https://apps.nextcloud.com/apps/webapppassword/releases
