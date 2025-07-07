@@ -73,7 +73,8 @@ build:php-fpm:
   <<: *image-build
   variables:
     IMGNAME: php-fpm
-    IMGARGS: --build-arg nc_url=$NC_URL --build-arg push_bin_url=$NC_PUSH_URL --build-arg push_app_url=$NC_PUSH_APP --build-arg debug_build=$DEBUG_BUILD --build-arg apps='$NC_APPS'
+    # IMGARGS: --build-arg nc_url=$NC_URL --build-arg push_bin_url=$NC_PUSH_URL --build-arg push_app_url=$NC_PUSH_APP --build-arg debug_build=$DEBUG_BUILD --build-arg apps='$NC_APPS'
+    IMGARGS: --build-arg nc_url=$NC_URL --build-arg push_bin_url=$NC_PUSH_URL --build-arg debug_build=$DEBUG_BUILD --build-arg apps='$NC_APPS'
   rules:
     - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
       changes:
