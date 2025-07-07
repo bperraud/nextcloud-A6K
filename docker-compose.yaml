@@ -27,7 +27,8 @@ services:
     restart: "no"
 
   nextcloud:
-    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:ssl
+    # image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     pull_policy: always
     container_name: nextcloud
     # depends_on:
@@ -36,6 +37,7 @@ services:
     networks:
       - galera_net
     volumes:
+      - ./notify-push/notify_push.service:/etc/systemd/system/notify_push.service
       - nextcloud_data:/srv/data
       - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
       # - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
@@ -57,14 +59,17 @@ services:
 
   notify-push:
     container_name: notify-push
-    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
+    # build:
+    #   context: ./notify-push/
+    #   dockerfile: Dockerfile
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:ssl
     command:
       - /usr/local/bin/notify_push
       - --glob-config
       - --allow-self-signed
+      - --nextcloud-url=https://apache:8443
       - --
       - /srv/data/.config-base.php
-      # - /var/www/html/config/config.php
     # healthcheck:
     #   test: ["CMD", "nc", "-z", "localhost", "7867"]
     #   interval: 30s

@@ -1,0 +1,13 @@
+[Unit]
+Description = Push daemon for Nextcloud clients
+
+[Service]
+Environment=PORT=7867
+Environment=NEXTCLOUD_URL=https://apache:8443
+Environment=ALLOW_SELF_SIGNED=true
+ExecStart=/var/www/html/apps/notify_push/bin/x86_64/notify_push /var/www/html/config/config.php
+Type=notify
+User=www-data
+
+[Install]
+WantedBy = multi-user.target

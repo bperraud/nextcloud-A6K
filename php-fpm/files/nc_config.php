@@ -5,9 +5,9 @@ $CONFIG = [
   'overwrite.cli.url' => 'https://apache:8443',
   'trusted_domains' => [
     'localhost',
-    'cloud.example.com',
     'nextcloud',
-    'nextcloud.localdomain'
+    'nextcloud.localdomain',
+    'apache'
   ],
   'datadirectory' => '/srv/data',
   'appcodechecker' => true,
