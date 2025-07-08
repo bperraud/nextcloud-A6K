@@ -75,6 +75,20 @@ RUN ln -s /srv/data/.config-base.php /var/www/html/config/config.php
 COPY files/ca.crt /usr/local/share/ca-certificates/nc-ca.crt
 RUN update-ca-certificates --fresh
 
+
+# Copy scripts file
+COPY --from=hairyhenderson/gomplate:stable /gomplate /bin/gomplate
+
+COPY ./scripts/post_install.sh.gotpl /tmp/post_install.sh.gotpl
+COPY ./values.yaml /tmp/values.yaml
+
+RUN /bin/gomplate \
+    -f /tmp/post_install.sh.gotpl \
+    -d values=/tmp/values.yaml \
+    -o /var/www/html/post_install.sh
+
+RUN chown -R www-data:root /var/www/html/post_install.sh && chmod u=rwx,g=rwx,o= /var/www/html/post_install.sh
+
 # USER default
 
 USER www-data
