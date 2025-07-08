@@ -43,6 +43,7 @@ RUN for app in $apps; do \
     wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
 done
 
+RUN echo installing $push_app_url
 RUN wget --quiet -O- "$push_app_url" | tar xz -C /var/www/html/apps
 
 # Permissions
