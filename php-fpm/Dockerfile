@@ -43,7 +43,7 @@ RUN for app in $apps; do \
     wget --quiet -O- "$app" | tar xz -C /var/www/html/custom_apps ; \
 done
 
-RUN wget --quiet -O- $push_app_url | tar xz -C /var/www/html/apps
+RUN wget --quiet -O- "$push_app_url" | tar xz -C /var/www/html/apps
 
 # Permissions
 RUN chown -R www-data:root /var/www/html && \
