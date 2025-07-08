@@ -3,7 +3,10 @@
 set -e
 set -o pipefail
 
-if [ "`host {{.Release.Name}}-mariadb-galera-headless | wc -l`" != "{{ index .Values "mariadb-galera" "replicaCount" }}" ]; then
+MARIADB_HOST="mariadb1"
+REPLICA="3"
+
+if [ "`host "$MARIADB_HOST" | wc -l`" != $REPLICA ]; then
     echo "Not all galera nodes ready; not backing up DB."
     exit 1
 fi
@@ -13,6 +16,7 @@ keep=10
 datadir=/srv/data
 backupdir="$datadir/.db_backup"
 lockfile="$backupdir/.lock"
+
 
 if [ -z "$1" ]; then
     backup_file="backup-`date +%d-%m-%+4Y_%H:%M`.sql.gz"
@@ -33,11 +37,17 @@ touch "$lockfile"
 sleep 2
 
 echo "Backing up database from mariadb primary..."
-if ! mysqldump -h {{ .Release.Name }}-mariadb-galera-0.{{ .Release.Name }}-mariadb-galera-headless -u {{ index .Values "mariadb-galera" "db" "user" }} --password="$DBPASS" {{ index .Values "mariadb-galera" "db" "name" }} | gzip -3 > $backup_file ; then
-    rm -f $backup_file
-    echo "Backup failed!"
-    exit 1
+if ! mysqldump \
+    -h "$MARIADB_HOST" \
+    -P "3306" \
+    -u "$MARIADB_USER" \
+    --password="$MARIADB_PASSWORD" \
+    "$MARIADB_DATABASE" | gzip -3 > "$backup_file"; then
+  rm -f $backup_file
+  echo "error: mysqldump failed"
+  exit 1
 fi
+
 echo "Pruning old backups"
 ls -tr | head -n -$keep | xargs rm -f
 
