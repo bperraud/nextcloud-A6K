@@ -1,15 +1,19 @@
-onlyoffice:
-  enabled: yes
-  json_config:
-    DocumentServerInternalUrl: "http://{{ .Values.nextcloud.onlyoffice_service }}.{{ .Values.nextcloud.onlyoffice_namespace }}.svc.cluster.local:{{ .Values.nextcloud.onlyoffice_port }}/"
-    DocumentServerUrl: "{{ .Values.nextcloud.onlyoffice_public_url }}"
-    StorageUrl: "https://{{ .Values.nextcloud.fqdn }}/"
-    jwt_secret: I8RJPo8sLlRQ39Bqca6SJ3RKri82452v
-theming:
-  json_config:
-    name: MyCloud ULB (DEV INSTANCE TEST)
-spreed:
-  json_config:
-    signaling_servers:
-      secret: c063f274a0d9201966b1131148ec013eea8fada1e751406e0d3bfde2cc367b4a
+
+nextcloud:
+
+  apps:
+    onlyoffice:
+      enabled: no
+      json_config:
+        DocumentServerInternalUrl: "http://{{ .Values.nextcloud.onlyoffice_service }}.{{ .Values.nextcloud.onlyoffice_namespace }}.svc.cluster.local:{{ .Values.nextcloud.onlyoffice_port }}/"
+        DocumentServerUrl: "{{ .Values.nextcloud.onlyoffice_public_url }}"
+        StorageUrl: "https://{{ .Values.nextcloud.fqdn }}/"
+        jwt_secret: I8RJPo8sLlRQ39Bqca6SJ3RKri82452v
+    theming:
+      json_config:
+        name: MyCloud ULB (DEV INSTANCE TEST)
+    spreed:
+      json_config:
+        signaling_servers:
+          secret: c063f274a0d9201966b1131148ec013eea8fada1e751406e0d3bfde2cc367b4a
 

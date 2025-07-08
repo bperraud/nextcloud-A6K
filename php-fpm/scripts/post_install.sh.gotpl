@@ -18,21 +18,19 @@ if [ "`jq .needsDbUpgrade < /tmp/status.json`" != "false" ]; then
   exit 1
 fi
 
-{{- range $app, $cfg := .Values.nextcloud.apps }}
+{{- range $app, $cfg := (datasource "values").nextcloud.apps }}
 # Configuration for app {{ $app }}
 if [ ! -e "$wwwdir/apps/{{ $app }}" ] && [ ! -e "$wwwdir/custom_apps/{{ $app }}" ]; then
   echo "error: app {{ $app }} is mentionned in Helm values but not present in Docker image"
   exit 1
 fi
-{{- if list nil true | has $cfg.enabled}}
+
+{{- if or (not (has $cfg "enabled")) (eq $cfg.enabled "yes") }}
 ./occ app:enable {{ $app }}
 
-{{- range $cfg.occ_config }}
-./occ {{ tpl . $ }}
-{{- end }}
 
 {{- range $key, $val := $cfg.json_config }}
-./occ config:app:set --value={{ if or (kindIs "slice" $val) (kindIs "map" $val) }}{{ tpl ($val | mustToJson | quote) $ }}{{ else }}{{ tpl ($val | quote) $ }}{{ end }} {{ $app }} {{ $key }}
+./occ config:app:set {{ $app }} {{ $key }} --value='{{ $val }}'
 {{- end }}
 
 {{- else }}
