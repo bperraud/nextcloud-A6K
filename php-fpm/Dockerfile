@@ -89,8 +89,6 @@ RUN /bin/gomplate \
 
 RUN chown -R www-data:root /var/www/html/post_install.sh && chmod u=rwx,g=rwx,o= /var/www/html/post_install.sh
 
-# USER default
-
 USER www-data
 
 CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf

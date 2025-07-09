@@ -59,9 +59,6 @@ services:
 
   notify-push:
     container_name: notify-push
-    # build:
-    #   context: ./notify-push/
-    #   dockerfile: Dockerfile
     # setup cmd : ./occ notify_push:setup https://apache:8443/push
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:ssl
     command:
