@@ -101,7 +101,7 @@ USER www-data
 
 # CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf
 
-# ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/sbin/php-fpm8.2", "-c", "/etc/php/cur/fpm/php-fpm.conf"]
+ENTRYPOINT ["/entrypoint.sh"]
+# CMD ["/usr/sbin/php-fpm8.2", "-c", "/etc/php/cur/fpm/php-fpm.conf"]
 
 # CMD ["tail", "-f", "/dev/null"]

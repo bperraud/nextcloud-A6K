@@ -7,7 +7,7 @@ wwwdir=/var/www/html
 
 cd $wwwdir
 
-if ! wget --timeout=5 --quiet -O/tmp/status.json --no-check-certificate https://nextcloud:8443/status.php; then
+if ! wget --timeout=5 --quiet -O/tmp/status.json --no-check-certificate https://apache:8443/status.php; then
   echo "error: can't get nextcloud status.php"
   exit 1
 fi
