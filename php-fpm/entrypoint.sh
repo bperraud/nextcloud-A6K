@@ -2,8 +2,7 @@
 set -e
 
 # Start php-fpm in the background
-/usr/bin/php-fpm -c /etc/php/cur/fpm/php-fpm.conf &
-# CMD ["/usr/bin/php-fpm", "-c", "/etc/php/cur/fpm/php-fpm.conf"]
+/usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf &
 
 # Optional: wait for it to start up
 sleep 5  # Or add health probe here

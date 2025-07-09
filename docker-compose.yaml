@@ -27,8 +27,8 @@ services:
     restart: "no"
 
   nextcloud:
-    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:ssl
-    # image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
+    # image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:ssl
+    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
     pull_policy: always
     container_name: nextcloud
     env_file:
