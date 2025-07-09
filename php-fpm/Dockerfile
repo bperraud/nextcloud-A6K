@@ -8,6 +8,10 @@ ARG debug_build=0
 
 USER root
 
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
 RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y install --no-install-recommends gnupg wget ca-certificates && \
