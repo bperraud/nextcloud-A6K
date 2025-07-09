@@ -23,7 +23,7 @@ RUN /bin/gomplate \
     -d values=/tmp/values.yaml \
     -o /var/www/html/scripts/post_install.sh
 
-RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
+# RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
 
 COPY entrypoint.sh /entrypoint.sh
 
@@ -97,8 +97,6 @@ RUN ln -s /srv/data/.config-base.php /var/www/html/config/config.php
 # Custom CA
 COPY files/ca.crt /usr/local/share/ca-certificates/nc-ca.crt
 RUN update-ca-certificates --fresh
-
-
 
 USER www-data
 
