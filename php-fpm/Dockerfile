@@ -8,9 +8,28 @@ ARG debug_build=0
 
 USER root
 
+# Copy scripts file
+
+RUN mkdir -p /var/www/html/scripts/
+
+COPY --from=hairyhenderson/gomplate:stable /gomplate /bin/gomplate
+
+COPY ./scripts/setup.sh /var/www/html/scripts/setup.sh
+COPY ./scripts/post_install.sh.gotpl /tmp/post_install.sh.gotpl
+COPY ./values.yaml /tmp/values.yaml
+
+RUN /bin/gomplate \
+    -f /tmp/post_install.sh.gotpl \
+    -d values=/tmp/values.yaml \
+    -o /var/www/html/scripts/post_install.sh
+
+RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
+
 COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
+
+# App
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \
@@ -80,23 +99,6 @@ COPY files/ca.crt /usr/local/share/ca-certificates/nc-ca.crt
 RUN update-ca-certificates --fresh
 
 
-# Copy scripts file
-
-RUN mkdir -p /var/www/html/scripts/
-
-COPY --from=hairyhenderson/gomplate:stable /gomplate /bin/gomplate
-
-COPY ./scripts/post_install.sh.gotpl /tmp/post_install.sh.gotpl
-COPY ./values.yaml /tmp/values.yaml
-
-RUN /bin/gomplate \
-    -f /tmp/post_install.sh.gotpl \
-    -d values=/tmp/values.yaml \
-    -o /var/www/html/post_install.sh
-
-COPY ./scripts/setup.sh /var/www/html/setup.sh
-
-RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
 
 USER www-data
 
