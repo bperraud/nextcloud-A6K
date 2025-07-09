@@ -67,6 +67,7 @@ RUN for app in $apps; do \
 done
 
 RUN echo installing $push_app_url
+RUN mkdir -p /var/www/html/apps
 RUN wget --quiet -O- "$push_app_url" | tar xz -C /var/www/html/apps
 
 # Permissions
