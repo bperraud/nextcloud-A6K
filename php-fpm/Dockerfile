@@ -23,7 +23,7 @@ RUN /bin/gomplate \
     -d values=/tmp/values.yaml \
     -o /var/www/html/scripts/post_install.sh
 
-# RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
+RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
 
 COPY entrypoint.sh /entrypoint.sh
 
