@@ -77,6 +77,9 @@ RUN update-ca-certificates --fresh
 
 
 # Copy scripts file
+
+RUN mkdir -p /var/www/html/scripts/
+
 COPY --from=hairyhenderson/gomplate:stable /gomplate /bin/gomplate
 
 COPY ./scripts/post_install.sh.gotpl /tmp/post_install.sh.gotpl
@@ -87,10 +90,15 @@ RUN /bin/gomplate \
     -d values=/tmp/values.yaml \
     -o /var/www/html/post_install.sh
 
-RUN chown -R www-data:root /var/www/html/post_install.sh && chmod u=rwx,g=rwx,o= /var/www/html/post_install.sh
+COPY ./scripts/setup.sh /var/www/html/setup.sh
+
+RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
 
 USER www-data
 
-CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf
+# CMD /usr/sbin/php-fpm* -c /etc/php/cur/fpm/php-fpm.conf
+
+ENTRYPOINT ["/entrypoint.sh"]
+# CMD ["/usr/bin/php-fpm", "-c", "/etc/php/cur/fpm/php-fpm.conf"]
 
 # CMD ["tail", "-f", "/dev/null"]
