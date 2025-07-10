@@ -17,12 +17,21 @@ nextcloud:
     theming:
       json_config:
         name: MyCloud ULB (DEV INSTANCE TEST)
+    files_antivirus:
+      json_config:
+        av_mode: "daemon"
+        av_host: "clamav"
+        av_port: "3310"
+
     spreed:
       json_config:
         signaling_servers:
-          secret: c063f274a0d9201966b1131148ec013eea8fada1e751406e0d3bfde2cc367b4a
-    files_antivirus:
-      json_config:
-        av_mode: "socket"
-        av_host: "clamav"
-        av_port: "3310"
+          servers:
+            - server: wss://mycloud-talk.ulb.be/
+              verify: yes
+        turn_servers:
+          - scheme: turn
+            server: mycloud-talk.ulb.be:8443
+            secret: 319e264dd273c3d19fdfc5fbc4f4d997edffd5825aedcd13798f64eac286a64a
+            protocols: tcp
+
