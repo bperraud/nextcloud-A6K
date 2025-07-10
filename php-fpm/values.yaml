@@ -16,4 +16,8 @@ nextcloud:
       json_config:
         signaling_servers:
           secret: c063f274a0d9201966b1131148ec013eea8fada1e751406e0d3bfde2cc367b4a
-
+    files_antivirus:
+      json_config:
+        av_mode: "socket"
+        av_host: "clamav"
+        av_port: "3310"
