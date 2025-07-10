@@ -50,20 +50,20 @@ RUN wget --quiet -O- "$push_app_url" | tar xz -C /var/www/html/apps
 
 # Copy scripts file
 
-RUN mkdir -p /var/www/html/scripts/
+RUN mkdir -p /scripts
 
 COPY --from=hairyhenderson/gomplate:stable /gomplate /bin/gomplate
 
-COPY ./scripts/setup.sh /var/www/html/scripts/setup.sh
+COPY ./scripts/setup.sh /scripts/setup.sh
 COPY ./scripts/post_install.sh.gotpl /tmp/post_install.sh.gotpl
 COPY ./values.yaml /tmp/values.yaml
 
 RUN /bin/gomplate \
     -f /tmp/post_install.sh.gotpl \
     -d values=/tmp/values.yaml \
-    -o /var/www/html/scripts/post_install.sh
+    -o /scripts/post_install.sh
 
-RUN chown -R www-data:root /var/www/html/scripts && chmod -R u=rwx,g=rwx,o= /var/www/html/scripts/
+RUN chown -R www-data:root /scripts && chmod -R u=rwx,g=rwx,o= /scripts
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
