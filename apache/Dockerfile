@@ -1,7 +1,6 @@
 FROM httpd:2.4-bullseye
 
 ARG nc_url="https://download.nextcloud.com/.customers/server/31.0.4-a59bd0a7/nextcloud-31.0.4-enterprise.zip"
-
 ARG apps=""
 
 USER root

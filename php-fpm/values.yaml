@@ -1,13 +1,18 @@
 
 nextcloud:
 
+  onlyoffice_namespace: onlyoffice
+  onlyoffice_service: documentserver
+  onlyoffice_port: 8888
+  onlyoffice_public_url: https://docserv-onlyoffice.apps.dev.okd.hpda.ulb.ac.be/
+
   apps:
     onlyoffice:
-      enabled: no
+      enabled: yes
       json_config:
-        DocumentServerInternalUrl: "http://{{ .Values.nextcloud.onlyoffice_service }}.{{ .Values.nextcloud.onlyoffice_namespace }}.svc.cluster.local:{{ .Values.nextcloud.onlyoffice_port }}/"
-        DocumentServerUrl: "{{ .Values.nextcloud.onlyoffice_public_url }}"
-        StorageUrl: "https://{{ .Values.nextcloud.fqdn }}/"
+        DocumentServerInternalUrl: "http://documentserver.onlyoffice.svc.cluster.local:8888"
+        DocumentServerUrl: "https://docserv-onlyoffice.apps.dev.okd.hpda.ulb.ac.be/"
+        StorageUrl: "https://apache"
         jwt_secret: I8RJPo8sLlRQ39Bqca6SJ3RKri82452v
     theming:
       json_config:
