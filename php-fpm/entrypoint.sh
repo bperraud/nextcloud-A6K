@@ -9,11 +9,11 @@ sleep 5  # Or add health probe here
 
 # Run setup script
 echo "[INFO] Running setup script..."
-/scripts/setup.sh
+/srv/scripts/setup.sh
 
 # # Run post-install script
 echo "[INFO] Running post script..."
-/scripts/post_install.sh
+/srv/scripts/post_install.sh
 
 # Run cron job manually
 echo "[INFO] Running cronjob..."

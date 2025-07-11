@@ -2,11 +2,11 @@
 
 $CONFIG = [
   'trusted_proxies' => ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
-  'overwrite.cli.url' => 'https://localhost',
+  'overwrite.cli.url' => 'https://' . getenv('DOMAIN'),
   'trusted_domains' => [
-    'localhost',
+    getenv('DOMAIN'),
     'nextcloud',
-    'nextcloud.localdomain',
+    'mycloud.ulb.be',
     'apache'
   ],
   'datadirectory' => '/srv/data',

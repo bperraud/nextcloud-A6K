@@ -45,19 +45,6 @@ services:
       - ./php-fpm/files/php.ini:/etc/php/cur/fpm/conf.d/99-k8s.ini:ro
       - nextcloud_config:/var/www/html/config
   
-  nextcloud-cron:
-    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
-    restart: unless-stopped
-    env_file:
-      - ./nextcloud.env
-      - ./db.env
-    volumes:
-      - ./app:/var/www/html
-      - ./files:/var/www/html/data
-      - ./config:/var/www/html/config
-    entrypoint: /cron.sh
-    depends_on:
-      - nextcloud
 
   notify-push:
     container_name: notify-push
@@ -78,16 +65,9 @@ services:
     volumes:
       - nextcloud_config:/var/www/html/config
       - nextcloud_data:/srv/data
-      # - ./php-fpm/files/nc_config.php:/var/www/html/config/k8s.config.php:ro
-    # environment:
-    #   - ALLOW_SELF_SIGNED=true
     networks:
       - galera_net
 
-  # clamav:
-  #   image: ghcr.io/mailu/clamav:1.9.50
-  #   restart: always
-  
   clamav:
     image: clamav/clamav:stable_base
     container_name: clamav
@@ -96,30 +76,11 @@ services:
       - /var/run/clamav/:/var/run/clamav/
       # Virus DB
       - /var/docker/clamav/virus_db/:/var/lib/clamav/
-    restart: unless-stopped
-
-  setup:
-    image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/php-fpm:main
-    entrypoint: ["/scripts/setup.sh"]
     networks:
       - galera_net
-    env_file:
-      - ./mariadb-galera/.env
-    # environment:
-    #   DBPASS: secret
-    #   NCADMINPASS: youradminpass
-    depends_on:
-      - mariadb1
-    volumes:
-      # - nextcloud_data:/srv/data
-      - ./php-fpm/scripts:/scripts
-      # - nextcloud_config:/var/www/html/config
-    restart: "no"
+    restart: unless-stopped
 
   apache:
-    # build:
-    #   context: ./apache/
-    #   dockerfile: Dockerfile
     container_name: apache
     image: registry.gitlab.ulb.be/pole-techno/nextcloud-a6k/apache:main
     pull_policy: always
@@ -130,7 +91,6 @@ services:
       - "443:8443"
     networks:
       - galera_net
-
 
   mariadb1:
     image: bitnami/mariadb-galera:11.4.7

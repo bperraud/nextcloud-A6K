@@ -50,7 +50,7 @@ elif [ -e "$datadir/.installed" ]; then
             exit 1
         fi
         echo '<?php $CONFIG = [ "config_is_read_only" => false ] ;' > config/zupgrade.config.php    
-        /scripts/backup_db.sh .pre_upgrade.sql.gz
+        /srv/scripts/backup_db.sh .pre_upgrade.sql.gz
         if ! ./occ upgrade -vvv 2>&1 | tee "$datadir/nextcloud_upgrade.log" ; then
             echo "Upgrade failed; attempting to restore database" | tee -a "$datadir/nextcloud_upgrade.log"
             /scripts/restore_db.sh .pre_upgrade.sql.gz
