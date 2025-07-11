@@ -6,7 +6,6 @@ $CONFIG = [
   'trusted_domains' => [
     getenv('DOMAIN'),
     'nextcloud',
-    'mycloud.ulb.be',
     'apache'
   ],
   'datadirectory' => '/srv/data',

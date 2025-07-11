@@ -33,6 +33,7 @@ services:
     container_name: nextcloud
     env_file:
       - ./mariadb-galera/.env
+      - ./php-fpm/dev.env
     # depends_on:
     #   - mariadb1
     #   - redis
